@@ -20,32 +20,59 @@ class SupabaseService:
         else:
             headers["Authorization"] = f"Bearer {self.anon_key}"
         return headers
+   
+def get_auth_headers(self, jwt_token: Optional[str] = None) -> Dict[str, str]:
+    headers = {
+        "apikey": self.anon_key,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
 
+    if jwt_token:
+        clean_token = jwt_token.replace("Bearer ", "").strip()
+        headers["Authorization"] = f"Bearer {clean_token}"
+    else:
+        headers["Authorization"] = f"Bearer {self.anon_key}"
+
+    return headers
+
+
+async def get_current_user(
+    self,
+    authorization: Optional[str] = Header(None)
+) -> Dict[str, Any]:
+    """Validates the JWT token with Supabase Auth and returns the user object."""
+
+    if not authorization:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing authorization header"
+        )
+
+    token = authorization.replace("Bearer ", "").strip()
+    user_url = f"{self.url}/auth/v1/user"
+
+    headers = {
+        "apikey": self.anon_key,
+        "Authorization": f"Bearer {token}"
+    }
+
+    # Temporary diagnostic logs
     print("SUPABASE URL:", self.url)
     print("SUPABASE ANON KEY PRESENT:", bool(self.anon_key))
     print("AUTH ENDPOINT:", user_url)
 
-    async def get_current_user(self, authorization: Optional[str] = Header(None)) -> Dict[str, Any]:
-        """Validates the JWT token with Supabase Auth and returns the user object."""
-        if not authorization:
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        resp = await client.get(user_url, headers=headers)
+
+        if resp.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Missing authorization header"
+                detail=f"Invalid or expired session: {resp.text}"
             )
-        token = authorization.replace("Bearer ", "").strip()
-        user_url = f"{self.url}/auth/v1/user"
-        headers = {
-            "apikey": self.anon_key,
-            "Authorization": f"Bearer {token}"
-        }
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(user_url, headers=headers)
-            if resp.status_code != 200:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=f"Invalid or expired session: {resp.text}"
-                )
-            return resp.json()
+
+        return resp.json()
+
 
     async def query_table(
         self,
