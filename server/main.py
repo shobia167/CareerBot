@@ -1,4 +1,5 @@
 import logging
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from server.config import settings
@@ -54,6 +55,28 @@ async def health_check():
         "gemini_model": settings.gemini_model,
         "supabase_connected": bool(settings.supabase_url)
     }
+@app.get("/api/test-supabase")
+async def test_supabase():
+    url = f"{settings.supabase_url.rstrip('/')}/auth/v1/health"
+
+    try:
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            response = await client.get(
+                url,
+                headers={"apikey": settings.supabase_anon_key}
+            )
+
+        return {
+            "connection": "success",
+            "status_code": response.status_code
+        }
+
+    except Exception as e:
+        logger.exception("Supabase connection test failed")
+        return {
+            "connection": "failed",
+            "error": str(e)
+        }
 
 if __name__ == "__main__":
     import uvicorn
