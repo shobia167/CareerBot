@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-ivory: #F8F7F2;
+  --bg-soft-ivory: #EFEEE7;
+  --text-midnight: #17191C;
+  --accent-lime: #C5F36A;
+  --border-neutral: #DEDED5;
+}
+
+body {
+  background-color: var(--bg-ivory);
+  color: var(--text-midnight);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F7F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4D4CA;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B6B6AB;
+}
+
+/* Glassmorphism and subtle card elevation */
+.card-subtle {
+  background: #FFFFFF;
+  border: 1px solid #DEDED5;
+  box-shadow: 0 4px 20px -2px rgba(23, 25, 28, 0.04);
+}
+
+.card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -4px rgba(23, 25, 28, 0.08);
+}
+
+/* Accent Button */
+.btn-lime {
+  background-color: #C5F36A;
+  color: #17191C;
+  font-weight: 600;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+.btn-lime:hover {
+  background-color: #b8e858;
+  box-shadow: 0 4px 12px rgba(197, 243, 106, 0.4);
+}
+
+.btn-secondary {
+  background-color: #EFEEE7;
+  color: #17191C;
+  font-weight: 600;
+  border: 1px solid #DEDED5;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background-color: #e5e4dc;
+}
+
+/* Wave pattern highlight */
+.wave-accent {
+  background-image: radial-gradient(#C5F36A 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
