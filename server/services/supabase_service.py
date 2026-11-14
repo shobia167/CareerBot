@@ -57,10 +57,7 @@ async def get_current_user(
         "Authorization": f"Bearer {token}"
     }
 
-    # Temporary diagnostic logs
-    print("SUPABASE URL:", self.url)
-    print("SUPABASE ANON KEY PRESENT:", bool(self.anon_key))
-    print("AUTH ENDPOINT:", user_url)
+
 
     async with httpx.AsyncClient(timeout=15.0) as client:
         resp = await client.get(user_url, headers=headers)
