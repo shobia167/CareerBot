@@ -21,6 +21,10 @@ class SupabaseService:
             headers["Authorization"] = f"Bearer {self.anon_key}"
         return headers
 
+    print("SUPABASE URL:", self.url)
+    print("SUPABASE ANON KEY PRESENT:", bool(self.anon_key))
+    print("AUTH ENDPOINT:", user_url)
+
     async def get_current_user(self, authorization: Optional[str] = Header(None)) -> Dict[str, Any]:
         """Validates the JWT token with Supabase Auth and returns the user object."""
         if not authorization:
