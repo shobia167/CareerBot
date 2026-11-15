@@ -77,6 +77,23 @@ async def test_supabase():
             "connection": "failed",
             "error": str(e)
         }
+    @app.get("/api/test-outbound")
+async def test_outbound():
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            response = await client.get("https://example.com")
+
+        return {
+            "connection": "success",
+            "status_code": response.status_code
+        }
+
+    except Exception as e:
+        logger.exception("External network test failed")
+        return {
+            "connection": "failed",
+            "error": str(e)
+        }
 
 if __name__ == "__main__":
     import uvicorn
