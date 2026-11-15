@@ -77,7 +77,7 @@ async def test_supabase():
             "connection": "failed",
             "error": str(e)
         }
-    @app.get("/api/test-outbound")
+@app.get("/api/test-outbound")
 async def test_outbound():
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
